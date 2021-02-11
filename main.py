@@ -2,10 +2,13 @@ from flask import Flask, request
 from flask_restful import Resource, Api, abort
 import uuid
 import json
+import os
 from datetime import datetime, timezone
 
 app = Flask(__name__)
 api = Api(app)
+
+API_HOST = os.environ.get("API_HOST", "localhost")
 
 
 def generate_uuid():
@@ -40,6 +43,7 @@ MEASUREMENTS = [
 
 class Measurement(Resource):
     def get(self, id):
+
         for measurement in MEASUREMENTS:
             if id == measurement.get('id'):
                 return measurement, 200
@@ -68,4 +72,4 @@ api.add_resource(Measurement, "/v1/measurements/<string:id>")
 api.add_resource(MeasurementList, "/v1/measurements")
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host=API_HOST)
